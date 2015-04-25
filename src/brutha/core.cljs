@@ -5,20 +5,21 @@
   (-render [this]))
 
 (defn- react-methods [component]
-  {:shouldComponentUpdate
-   (fn [next-props _]
-     (this-as this
-       (not= (-> this .-props .-value) (.-value next-props))))
-   :render
-   (fn []
-     (this-as this
-       (-render (component (-> this .-props .-value) this))))})
+  #js {:shouldComponentUpdate
+       (fn [next-props _]
+         (this-as this
+           (not= (-> this .-props .-value) (.-value next-props))))
+       :render
+       (fn []
+         (this-as this
+           (-render (component (-> this .-props .-value) this))))})
 
 (defn build [component]
-  (let [methods    (react-methods component)
-        react-comp (.createClass js/React (clj->js methods))]
+  (let [methods (react-methods component)
+        class   (.createClass js/React methods)
+        factory (.createFactory js/React class)]
     (fn [value]
-      (.createElement js/React react-comp #js {:value value}))))
+      (factory #js {:value value}))))
 
 (defn render [element node]
   (.render js/React element node))

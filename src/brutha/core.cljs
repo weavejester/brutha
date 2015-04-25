@@ -4,7 +4,7 @@
 (defprotocol Render
   (-render [this]))
 
-(defn- react-methods [component]
+(def ^:private react-methods
   #js {:shouldComponentUpdate
        (fn [next-props _]
          (this-as this
@@ -12,14 +12,14 @@
        :render
        (fn []
          (this-as this
-           (-render (component (-> this .-props .-value) this))))})
+           (let [props (.-props this)]
+             (-render ((.-behavior props) (.-value props) this)))))})
 
-(defn build [component]
-  (let [methods (react-methods component)
-        class   (.createClass js/React methods)
-        factory (.createFactory js/React class)]
-    (fn [value]
-      (factory #js {:value value}))))
+(def ^:private react-factory
+  (.createFactory js/React (.createClass js/React react-methods)))
+
+(defn build [behavior value]
+  (react-factory #js {:behavior behavior, :value value}))
 
 (defn render [element node]
   (.render js/React element node))

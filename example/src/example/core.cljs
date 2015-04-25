@@ -8,5 +8,5 @@
     (-render [_]
       (html [:p text]))))
 
-(let [f (brutha/build foo)]
-  (brutha/render (f "Hello World") (.getElementById js/document "app")))
+(brutha/render (brutha/build foo "Hello World")
+               (.getElementById js/document "app"))

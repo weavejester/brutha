@@ -7,6 +7,12 @@
 (defprotocol IDidMount
   (did-mount [this]))
 
+(defprotocol IWillUpdate
+  (will-update [this next-value]))
+
+(defprotocol IDidUpdate
+  (did-update [this prev-value]))
+
 (defprotocol IRender
   (render [this]))
 
@@ -34,6 +40,18 @@
          (this-as this
            (let [behavior (.behave next-props (.-value next-props) this)]
              (aset this "__brutha_behavior" behavior))))
+       :componentWillUpdate
+       (fn [next-props _]
+         (this-as this
+           (let [behavior (aget this "__brutha_behavior")]
+             (when (satisfies? IWillUpdate behavior)
+               (will-update behavior (.-value next-props))))))
+       :componentDidUpdate
+       (fn [prev-props _]
+         (this-as this
+           (let [behavior (aget this "__brutha_behavior")]
+             (when (satisfies? IDidUpdate behavior)
+               (did-update behavior (.-value prev-props))))))
        :render
        (fn []
          (this-as this

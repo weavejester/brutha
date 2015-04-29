@@ -13,6 +13,12 @@
     br/IDidMount
     (did-mount [_]
       (.log js/console "did-mount"))
+    br/IWillUpdate
+    (will-update [_ v]
+      (.log js/console (str "will-update: " (pr-str v))))
+    br/IDidUpdate
+    (did-update [_ v]
+      (.log js/console (str "did-update: " (pr-str v))))
     br/IRender
     (render [_]
       (set! counter (inc counter))
@@ -21,6 +27,6 @@
 (let [app (.getElementById js/document "app")]
   (defn render-time []
     (br/mount (br/build paragraph (str (.getTime (js/Date.)))) app)
-    (js/setTimeout render-time 16)))
+    (js/setTimeout render-time 1000)))
 
 (render-time)

@@ -21,5 +21,10 @@
 (defn build [behavior value]
   (react-factory #js {:behavior behavior, :value value}))
 
+(def ^:private req-anim-frame
+  (if (exists? js/requestAnimationFrame)
+    js/requestAnimationFrame
+    (fn [f] (js/setTimeout f 16))))
+
 (defn mount [element node]
-  (.render js/React element node))
+  (req-anim-frame #(.render js/React element node)))

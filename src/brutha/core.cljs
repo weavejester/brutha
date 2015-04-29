@@ -21,10 +21,15 @@
 (defn build [behavior value]
   (react-factory #js {:behavior behavior, :value value}))
 
+(def ^:private refresh-queued #js {})
+
 (def ^:private req-anim-frame
   (if (exists? js/requestAnimationFrame)
     js/requestAnimationFrame
     (fn [f] (js/setTimeout f 16))))
 
 (defn mount [element node]
-  (req-anim-frame #(.render js/React element node)))
+  (when-not (aget refresh-queued node)
+    (aset refresh-queued node true)
+    (req-anim-frame #(do (js-delete refresh-queued node)
+                         (.render js/React element node)))))

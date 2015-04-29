@@ -7,6 +7,12 @@
 
 (defn paragraph [text owner]
   (reify
+    br/IWillMount
+    (will-mount [_]
+      (.log js/console "will-mount"))
+    br/IDidMount
+    (did-mount [_]
+      (.log js/console "did-mount"))
     br/IRender
     (render [_]
       (set! counter (inc counter))

@@ -1,6 +1,12 @@
 (ns brutha.core
   (:require cljsjs.react))
 
+(defprotocol IWillMount
+  (will-mount [this]))
+
+(defprotocol IDidMount
+  (did-mount [this]))
+
 (defprotocol IRender
   (render [this]))
 
@@ -14,16 +20,24 @@
          (this-as this
            (let [props    (.-props this)
                  behavior (.behave props (.-value props) this)]
-             (aset props "behavior" behavior))))
+             (aset this "__brutha_behavior" behavior)
+             (when (satisfies? IWillMount behavior)
+               (will-mount behavior)))))
+       :componentDidMount
+       (fn []
+         (this-as this
+           (let [behavior (aget this "__brutha_behavior")]
+             (when (satisfies? IDidMount behavior)
+               (did-mount behavior)))))
        :componentWillReceiveProps
        (fn [next-props]
          (this-as this
            (let [behavior (.behave next-props (.-value next-props) this)]
-             (aset next-props "behavior" behavior))))
+             (aset this "__brutha_behavior" behavior))))
        :render
        (fn []
          (this-as this
-           (render (.-behavior (.-props this)))))})
+           (render (aget this "__brutha_behavior"))))})
 
 (def ^:private react-factory
   (.createFactory js/React (.createClass js/React react-methods)))

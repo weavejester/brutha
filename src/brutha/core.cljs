@@ -9,17 +9,27 @@
        (fn [next-props _]
          (this-as this
            (not= (-> this .-props .-value) (.-value next-props))))
+       :componentWillMount
+       (fn []
+         (this-as this
+           (let [props    (.-props this)
+                 behavior (.behave props (.-value props) this)]
+             (aset props "behavior" behavior))))
+       :componentWillReceiveProps
+       (fn [next-props]
+         (this-as this
+           (let [behavior (.behave next-props (.-value next-props) this)]
+             (aset next-props "behavior" behavior))))
        :render
        (fn []
          (this-as this
-           (let [props (.-props this)]
-             (render (.behavior props (.-value props) this)))))})
+           (render (.-behavior (.-props this)))))})
 
 (def ^:private react-factory
   (.createFactory js/React (.createClass js/React react-methods)))
 
-(defn build [behavior value]
-  (react-factory #js {:behavior behavior, :value value}))
+(defn build [behave value]
+  (react-factory #js {:behave behave, :value value}))
 
 (def ^:private refresh-queued #js {})
 

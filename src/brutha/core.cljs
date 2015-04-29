@@ -13,7 +13,7 @@
        (fn []
          (this-as this
            (let [props (.-props this)]
-             (render ((.-behavior props) (.-value props) this)))))})
+             (render (.behavior props (.-value props) this)))))})
 
 (def ^:private react-factory
   (.createFactory js/React (.createClass js/React react-methods)))

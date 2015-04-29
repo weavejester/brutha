@@ -1,8 +1,8 @@
 (ns brutha.core
   (:require cljsjs.react))
 
-(defprotocol Render
-  (-render [this]))
+(defprotocol IRender
+  (render [this]))
 
 (def ^:private react-methods
   #js {:shouldComponentUpdate
@@ -13,7 +13,7 @@
        (fn []
          (this-as this
            (let [props (.-props this)]
-             (-render ((.-behavior props) (.-value props) this)))))})
+             (render ((.-behavior props) (.-value props) this)))))})
 
 (def ^:private react-factory
   (.createFactory js/React (.createClass js/React react-methods)))
@@ -21,5 +21,5 @@
 (defn build [behavior value]
   (react-factory #js {:behavior behavior, :value value}))
 
-(defn render [element node]
+(defn mount [element node]
   (.render js/React element node))

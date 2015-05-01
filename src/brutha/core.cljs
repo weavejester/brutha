@@ -11,10 +11,10 @@
   (did-mount [this value node]))
 
 (defprotocol IWillUpdate
-  (will-update [this value next-value]))
+  (will-update [this value next-value node]))
 
 (defprotocol IDidUpdate
-  (did-update [this value prev-value]))
+  (did-update [this value prev-value node]))
 
 (defprotocol IRender
   (render [this value]))
@@ -42,13 +42,15 @@
        (if (satisfies? IWillUpdate behavior)
          (fn [next-props]
            (this-as this
-             (will-update behavior (.. this -props -value) (.-value next-props))))
+             (let [value (.. this -props -value)]
+               (will-update behavior value (.-value next-props) (.getDOMNode this)))))
          (fn [_]))
        :componentDidUpdate
        (if (satisfies? IDidUpdate behavior)
          (fn [prev-props _]
            (this-as this
-             (did-update behavior (.. this -props -value) (.-value prev-props))))
+             (let [value (.. this -props -value)]
+               (did-update behavior value (.-value prev-props) (.getDOMNode this)))))
          (fn [_ _]))
        :render
        (if (satisfies? IRender behavior)

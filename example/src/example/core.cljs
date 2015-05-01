@@ -20,11 +20,13 @@
        (.log js/console "did-mount")
        (.log js/console node))
      br/IWillUpdate
-     (will-update [_ _ v]
-       (.log js/console (str "will-update: " (pr-str v))))
+     (will-update [_ _ v node]
+       (.log js/console (str "will-update: " (pr-str v)))
+       (.log js/console node))
      br/IDidUpdate
-     (did-update [_ _ v]
-       (.log js/console (str "did-update: " (pr-str v))))
+     (did-update [_ _ v node]
+       (.log js/console (str "did-update: " (pr-str v)))
+       (.log js/console node))
      br/IRender
      (render [_ text]
        (set! counter (inc counter))

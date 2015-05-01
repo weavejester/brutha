@@ -51,7 +51,10 @@
        :render
        (fn []
          (this-as this
-           (render behavior (.. this -props -value))))})
+           (let [value (.. this -props -value)]
+             (if (satisfies? IRender behavior)
+               (render behavior value)
+               (behavior value)))))})
 
 (defn- react-factory [behavior]
   (.createFactory js/React (.createClass js/React (react-methods behavior))))

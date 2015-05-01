@@ -21,40 +21,39 @@
 
 (defn- react-methods [behavior]
   #js {:shouldComponentUpdate
-       (fn [next-props _]
-         (this-as this
-           (let [value      (.. this -props -value)
-                 next-value (.-value next-props)]
-             (if (satisfies? IShouldUpdate behavior)
-               (should-update? behavior value next-value)
-               (not= value next-value)))))
+       (if (satisfies? IShouldUpdate behavior)
+         (fn [next-props _]
+           (this-as this
+             (should-update? behavior (.. this -props -value) (.-value next-props))))
+         (fn [next-props _]
+           (this-as this
+             (not= (.. this -props -value) (.-value next-props)))))
        :componentWillMount
-       (fn []
-         (this-as this
-           (when (satisfies? IWillMount behavior)
-             (will-mount behavior (.. this -props -value)))))
+       (if (satisfies? IWillMount behavior)
+         (fn [] (this-as this (will-mount behavior (.. this -props -value))))
+         (fn []))
        :componentDidMount
-       (fn []
-         (this-as this
-           (when (satisfies? IDidMount behavior)
-             (did-mount behavior (.. this -props -value) (.getDOMNode this)))))
+       (if (satisfies? IDidMount behavior)
+         (fn []
+           (this-as this
+             (did-mount behavior (.. this -props -value) (.getDOMNode this))))
+         (fn []))
        :componentWillUpdate
-       (fn [next-props _]
-         (this-as this
-           (when (satisfies? IWillUpdate behavior)
-             (will-update behavior (.. this -props -value) (.-value next-props)))))
+       (if (satisfies? IWillUpdate behavior)
+         (fn [next-props]
+           (this-as this
+             (will-update behavior (.. this -props -value) (.-value next-props))))
+         (fn [_]))
        :componentDidUpdate
-       (fn [prev-props _]
-         (this-as this
-           (when (satisfies? IDidUpdate behavior)
-             (did-update behavior (.. this -props -value) (.-value prev-props)))))
+       (if (satisfies? IDidUpdate behavior)
+         (fn [prev-props _]
+           (this-as this
+             (did-update behavior (.. this -props -value) (.-value prev-props))))
+         (fn [_ _]))
        :render
-       (fn []
-         (this-as this
-           (let [value (.. this -props -value)]
-             (if (satisfies? IRender behavior)
-               (render behavior value)
-               (behavior value)))))})
+       (if (satisfies? IRender behavior)
+         (fn [] (this-as this (render behavior (.. this -props -value))))
+         (fn [] (this-as this (behavior (.. this -props -value)))))})
 
 (defn- react-factory [behavior]
   (.createFactory js/React (.createClass js/React (react-methods behavior))))

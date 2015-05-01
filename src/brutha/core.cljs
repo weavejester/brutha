@@ -2,66 +2,57 @@
   (:require cljsjs.react))
 
 (defprotocol IWillMount
-  (will-mount [this]))
+  (will-mount [this value]))
 
 (defprotocol IDidMount
-  (did-mount [this]))
+  (did-mount [this value node]))
 
 (defprotocol IWillUpdate
-  (will-update [this next-value]))
+  (will-update [this value next-value]))
 
 (defprotocol IDidUpdate
-  (did-update [this prev-value]))
+  (did-update [this value prev-value]))
 
 (defprotocol IRender
-  (render [this]))
+  (render [this value]))
 
-(def ^:private react-methods
+(defn- react-methods [behavior]
   #js {:shouldComponentUpdate
        (fn [next-props _]
          (this-as this
-           (not= (-> this .-props .-value) (.-value next-props))))
+           (not= (.. this -props -value) (.-value next-props))))
        :componentWillMount
        (fn []
          (this-as this
-           (let [props    (.-props this)
-                 behavior (.behave props (.-value props) this)]
-             (aset this "__brutha_behavior" behavior)
-             (when (satisfies? IWillMount behavior)
-               (will-mount behavior)))))
+           (when (satisfies? IWillMount behavior)
+             (will-mount behavior (.. this -props -value)))))
        :componentDidMount
        (fn []
          (this-as this
-           (let [behavior (aget this "__brutha_behavior")]
-             (when (satisfies? IDidMount behavior)
-               (did-mount behavior)))))
-       :componentWillReceiveProps
-       (fn [next-props]
-         (this-as this
-           (let [behavior (.behave next-props (.-value next-props) this)]
-             (aset this "__brutha_behavior" behavior))))
+           (when (satisfies? IDidMount behavior)
+             (did-mount behavior (.. this -props -value) (.getDOMNode this)))))
        :componentWillUpdate
        (fn [next-props _]
          (this-as this
-           (let [behavior (aget this "__brutha_behavior")]
-             (when (satisfies? IWillUpdate behavior)
-               (will-update behavior (.-value next-props))))))
+           (when (satisfies? IWillUpdate behavior)
+             (will-update behavior (.. this -props -value) (.-value next-props)))))
        :componentDidUpdate
        (fn [prev-props _]
          (this-as this
-           (let [behavior (aget this "__brutha_behavior")]
-             (when (satisfies? IDidUpdate behavior)
-               (did-update behavior (.-value prev-props))))))
+           (when (satisfies? IDidUpdate behavior)
+             (did-update behavior (.. this -props -value) (.-value prev-props)))))
        :render
        (fn []
          (this-as this
-           (render (aget this "__brutha_behavior"))))})
+           (render behavior (.. this -props -value))))})
 
-(def ^:private react-factory
-  (.createFactory js/React (.createClass js/React react-methods)))
+(defn- react-factory [behavior]
+  (.createFactory js/React (.createClass js/React (react-methods behavior))))
 
-(defn build [behave value]
-  (react-factory #js {:behave behave, :value value}))
+(defn component [behavior]
+  (let [factory (react-factory behavior)]
+    (fn [value]
+      (factory #js {:value value}))))
 
 (def ^:private refresh-queued #js {})
 

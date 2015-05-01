@@ -56,7 +56,7 @@
          (fn [] (this-as this (behavior (.. this -props -value)))))})
 
 (defn- react-factory [behavior]
-  (.createFactory js/React (.createClass js/React (react-methods behavior))))
+  (js/React.createFactory (js/React.createClass (react-methods behavior))))
 
 (defn component [behavior]
   {:pre [(or (fn? behavior) (satisfies? IRender behavior))]}
@@ -74,5 +74,6 @@
 (defn mount [element node]
   (when-not (aget refresh-queued node)
     (aset refresh-queued node true)
-    (req-anim-frame #(do (js-delete refresh-queued node)
-                         (.render js/React element node)))))
+    (req-anim-frame (fn []
+                      (js-delete refresh-queued node)
+                      (js/React.render element node)))))

@@ -8,6 +8,9 @@
 (def paragraph
   (br/component
    (reify
+     br/IShouldUpdate
+     (should-update? [_ a b]
+       (not= a b))
      br/IWillMount
      (will-mount [_ _]
        (.log js/console "will-mount"))

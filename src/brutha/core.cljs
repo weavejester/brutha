@@ -1,6 +1,9 @@
 (ns brutha.core
   (:require cljsjs.react))
 
+(defprotocol IShouldUpdate
+  (should-update? [this value next-value]))
+
 (defprotocol IWillMount
   (will-mount [this value]))
 
@@ -20,7 +23,11 @@
   #js {:shouldComponentUpdate
        (fn [next-props _]
          (this-as this
-           (not= (.. this -props -value) (.-value next-props))))
+           (let [value      (.. this -props -value)
+                 next-value (.-value next-props)]
+             (if (satisfies? IShouldUpdate behavior)
+               (should-update? behavior value next-value)
+               (not= value next-value)))))
        :componentWillMount
        (fn []
          (this-as this

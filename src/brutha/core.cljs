@@ -60,11 +60,15 @@
 (defn- react-factory [behavior]
   (js/React.createFactory (js/React.createClass (react-methods behavior))))
 
-(defn component [behavior]
+(defn component
+  [behavior]
   {:pre [(or (fn? behavior) (satisfies? IRender behavior))]}
   (let [factory (react-factory behavior)]
-    (fn [value]
-      (factory #js {:value value}))))
+    (fn create-element
+      ([value]
+       (create-element value {}))
+      ([value opts]
+       (factory #js {:value value, :key (opts :key js/undefined)})))))
 
 (def ^:private refresh-queued #js {})
 

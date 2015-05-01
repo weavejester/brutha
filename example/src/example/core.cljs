@@ -34,7 +34,9 @@
 
 (let [app (.getElementById js/document "app")]
   (defn render-time []
-    (br/mount (paragraph (str (.getTime (js/Date.)))) app)
+    (br/mount
+     (html [:div (paragraph (str (.getTime (js/Date.))) {:key "date"})])
+     app)
     (js/setTimeout render-time 1000)))
 
 (render-time)

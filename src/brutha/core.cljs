@@ -59,6 +59,7 @@
   (.createFactory js/React (.createClass js/React (react-methods behavior))))
 
 (defn component [behavior]
+  {:pre [(or (fn? behavior) (satisfies? IRender behavior))]}
   (let [factory (react-factory behavior)]
     (fn [value]
       (factory #js {:value value}))))

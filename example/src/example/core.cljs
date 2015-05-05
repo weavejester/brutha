@@ -1,39 +1,22 @@
 (ns example.core
   (:require [brutha.core :as br]
-            [flupot.dom :as dom]))
+            [flupot.dom :as dom]
+            [goog.string :as gstr]
+            [goog.string.format]))
 
-(def counter 0)
-
-(def paragraph
+(def time-component
   (br/component
-   (reify
-     br/IShouldUpdate
-     (should-update? [_ a b]
-       (.log js/console "should-update?")
-       (not= a b))
-     br/IWillMount
-     (will-mount [_ _]
-       (.log js/console "will-mount"))
-     br/IDidMount
-     (did-mount [_ _ node]
-       (.log js/console "did-mount")
-       (.log js/console node))
-     br/IWillUpdate
-     (will-update [_ _ v node]
-       (.log js/console (str "will-update: " (pr-str v)))
-       (.log js/console node))
-     br/IDidUpdate
-     (did-update [_ _ v node]
-       (.log js/console (str "did-update: " (pr-str v)))
-       (.log js/console node))
-     br/IRender
-     (render [_ text]
-       (set! counter (inc counter))
-       (dom/div (dom/p text) (dom/p counter))))))
+   (fn [dt]
+     (dom/span {:class "time"}
+       (gstr/format "%02d:%02d:%02d.%03d"
+                    (.getHours dt)
+                    (.getMinutes dt)
+                    (.getSeconds dt)
+                    (.getMilliseconds dt))))))
 
 (let [app (.getElementById js/document "app")]
   (defn render-time []
-    (br/mount (dom/div (paragraph (str (.getTime (js/Date.))) {:key "date"})) app)
-    (js/setTimeout render-time 1000)))
+    (br/mount (dom/p "Time: " (time-component (js/Date.))) app)
+    (js/setTimeout render-time 16)))
 
 (render-time)

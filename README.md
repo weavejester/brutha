@@ -9,13 +9,8 @@ A simple and functional ClojureScript interface to [React][].
 Unlike [Om][] and [Reagent][], Brutha is unopinionated on how you
 handle your application state. It doesn't include cursors or
 specialized atoms, instead relying on you to call a `mount` function
-with new state data.
-
-However, Brutha *is* opinionated on how to interface with
-React. Brutha components do not have their own state, and do not have
-access to the underlying React component object. While this may seem
-restrictive, it vastly simplifies the API without losing much
-functionality.
+with new state data. This is useful when you want to manage your
+application state yourself.
 
 [om]: https://github.com/omcljs/om
 [reagent]: https://github.com/reagent-project/reagent

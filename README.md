@@ -75,6 +75,15 @@ to write a component is to pass a function to `brutha.core/component`:
 By wrapping the function in a component, React knows only to update
 the DOM when the value passed to the function changes.
 
+When using the same component multiple times with a collection of
+data, it's important to give React a key to identify the
+component. You can do this by passing a `:key` option to the
+component:
+
+```clojure
+(foo-component data {:key (:id data)})
+```
+
 Sometimes it's useful to know when a component is mounted onto the
 DOM. Brutha supports this too. Instead of supplying a function to
 `component`, you can supply a reified type:
@@ -110,14 +119,6 @@ DOM. Brutha supports this too. Instead of supplying a function to
 
 A component is mounted once, and updated many times. The update
 methods will not be called on the initial render.
-
-Sometimes it's useful to specify a unique key to components. Keys
-allow React to efficiently deal with updates to lists of elements. In
-Brutha, you can pass `:key` in an option map to a component.
-
-```clojure
-(foo-component data {:key (:id data)})
-```
 
 ## License
 

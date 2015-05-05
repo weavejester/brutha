@@ -24,7 +24,7 @@ functionality.
 
 Add the following to your project `:dependencies`:
 
-    [brutha "0.1.0-SNAPSHOT"]
+    [brutha "0.1.0"]
 
 ## Usage
 

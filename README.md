@@ -67,7 +67,7 @@ to write a component is to pass a function to `brutha.core/component`:
 
 ```clojure
 (def unixtime
-  (br/component (fn [date] (div/p (str (.getTime date))))))
+  (br/component (fn [date] (dom/p (str (.getTime date))))))
 
 (br/mount (unixtime (js/Date.)) app)
 ```

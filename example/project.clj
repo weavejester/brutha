@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.7.0-beta2"]
                  [org.clojure/clojurescript "0.0-3211"]
                  [brutha "0.1.0-SNAPSHOT"]
-                 [sablono "0.3.4"]]
+                 [flupot "0.1.0-SNAPSHOT"]]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :cljsbuild
   {:builds {:main {:source-paths ["src"]

@@ -1,7 +1,6 @@
 (ns example.core
   (:require [brutha.core :as br]
-            [clojure.set :as set]
-            [sablono.core :as html :refer-macros [html]]))
+            [flupot.dom :as dom]))
 
 (def counter 0)
 
@@ -30,13 +29,11 @@
      br/IRender
      (render [_ text]
        (set! counter (inc counter))
-       (html [:div [:p text] [:p counter]])))))
+       (dom/div (dom/p text) (dom/p counter))))))
 
 (let [app (.getElementById js/document "app")]
   (defn render-time []
-    (br/mount
-     (html [:div (paragraph (str (.getTime (js/Date.))) {:key "date"})])
-     app)
+    (br/mount (dom/div (paragraph (str (.getTime (js/Date.))) {:key "date"})) app)
     (js/setTimeout render-time 1000)))
 
 (render-time)

@@ -86,18 +86,23 @@ DOM. Brutha supports this too. Instead of supplying a function to
      br/IShouldUpdate
      (should-update? [_ a b]
        (not= a b))
+
      br/IWillMount
      (will-mount [_ value]
        (js/console.log "will-mount"))
+
      br/IDidMount
      (did-mount [_ value dom-node]
        (js/console.log "did-mount"))
+
      br/IWillUpdate
      (will-update [_ value next-value dom-node]
        (js/console.log "will-update"))
+
      br/IDidUpdate
      (did-update [_ value prev-value dom-node]
        (js/console.log "did-update"))
+
      br/IRender
      (render [_ value]
        (dom/p "Hello World")))))

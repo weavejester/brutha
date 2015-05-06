@@ -7,7 +7,7 @@
 (def time-component
   (br/component
    (fn [dt]
-     (dom/span {:class "time"}
+     (dom/span {:class "time" :style {:color "#900"}}
        (gstr/format "%02d:%02d:%02d.%03d"
                     (.getHours dt)
                     (.getMinutes dt)

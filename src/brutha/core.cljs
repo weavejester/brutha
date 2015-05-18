@@ -19,15 +19,19 @@
 (defprotocol IRender
   (render [this value]))
 
+(def ^:dynamic *force-update?* false)
+
 (defn- react-methods [behavior]
   #js {:shouldComponentUpdate
        (if (satisfies? IShouldUpdate behavior)
          (fn [next-props _]
            (this-as this
-             (should-update? behavior (.. this -props -value) (.-value next-props))))
+             (or (.-forceUpdate next-props)
+                 (should-update? behavior (.. this -props -value) (.-value next-props)))))
          (fn [next-props _]
            (this-as this
-             (not= (.. this -props -value) (.-value next-props)))))
+             (or (.-forceUpdate next-props)
+                 (not= (.. this -props -value) (.-value next-props))))))
        :componentWillMount
        (if (satisfies? IWillMount behavior)
          (fn [] (this-as this (will-mount behavior (.. this -props -value))))
@@ -68,7 +72,9 @@
       ([value]
        (create-element value {}))
       ([value opts]
-       (factory #js {:value value, :key (opts :key js/undefined)})))))
+       (factory #js {:key (opts :key js/undefined)
+                     :value value
+                     :forceUpdate *force-update?*})))))
 
 (def ^:private refresh-queued #js {})
 

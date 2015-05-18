@@ -1,4 +1,4 @@
-(defproject brutha "0.1.0"
+(defproject brutha "0.1.1"
   :description "Simple ClojureScript interface to React"
   :url "https://github.com/weavejester/brutha"
   :license {:name "Eclipse Public License"

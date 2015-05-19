@@ -118,10 +118,10 @@ methods will not be called on the initial render.
 For development, particularly with hot loading systems like
 [Figwheel][], it's often useful to force an update of a component
 after code has been reloaded. This can be done by binding the
-`*force-update?*` var to `true`.
+`*force-update*` var to `true`.
 
 ```clojure
-(binding [br/*force-update?* true]
+(binding [br/*force-update* true]
   (br/mount (some-component data) app))
 ```
 

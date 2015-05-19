@@ -19,7 +19,7 @@
 (defprotocol IRender
   (render [this value]))
 
-(def ^:dynamic *force-update?* false)
+(def ^:dynamic *force-update* false)
 
 (defn- react-methods [behavior]
   #js {:shouldComponentUpdate
@@ -74,7 +74,7 @@
       ([value opts]
        (factory #js {:key (opts :key js/undefined)
                      :value value
-                     :forceUpdate *force-update?*})))))
+                     :forceUpdate *force-update*})))))
 
 (def ^:private refresh-queued #js {})
 

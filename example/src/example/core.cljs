@@ -14,9 +14,11 @@
                     (.getSeconds dt)
                     (.getMilliseconds dt))))))
 
-(let [app (.getElementById js/document "app")]
+(let [app1 (.getElementById js/document "app1")
+      app2 (.getElementById js/document "app2")]
   (defn render-time []
-    (br/mount (dom/p "Time: " (time-component (js/Date.))) app)
+    (br/mount (dom/p "Time: " (time-component (js/Date.))) app1)
+    (br/mount (dom/p "Copyright 2015") app2)
     (js/setTimeout render-time 16)))
 
 (render-time)

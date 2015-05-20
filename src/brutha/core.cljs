@@ -82,7 +82,7 @@
                      :value value
                      :forceUpdate *force-update*})))))
 
-(def ^:private refresh-queued #js {})
+(def ^:private refresh-queued (atom #{}))
 
 (def ^:private req-anim-frame
   (if (exists? js/requestAnimationFrame)
@@ -90,8 +90,8 @@
     (fn [f] (js/setTimeout f 16))))
 
 (defn mount [element node]
-  (when-not (aget refresh-queued node)
-    (aset refresh-queued node true)
+  (when-not (@refresh-queued node)
+    (swap! refresh-queued conj node)
     (req-anim-frame (fn []
-                      (js-delete refresh-queued node)
+                      (swap! refresh-queued disj node)
                       (js/React.render element node)))))

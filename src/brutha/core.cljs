@@ -58,8 +58,14 @@
          (fn [_ _]))
        :render
        (if (satisfies? IRender behavior)
-         (fn [] (this-as this (render behavior (.. this -props -value))))
-         (fn [] (this-as this (behavior (.. this -props -value)))))})
+         (fn [] (this-as this
+                 (let [props (.-props this)]
+                   (binding [*force-update* (.-forceUpdate props)]
+                     (render behavior (.-value props))))))
+         (fn [] (this-as this
+                 (let [props (.-props this)]
+                   (binding [*force-update* (.-forceUpdate props)]
+                     (behavior (.-value props)))))))})
 
 (defn- react-factory [behavior]
   (js/React.createFactory (js/React.createClass (react-methods behavior))))

@@ -56,6 +56,13 @@ those elements.
 (br/mount (dom/p "Goodbye World") app)
 ```
 
+If you want to remove the associated component from a DOM node, use
+the `brutha.core/unmount` function:
+
+```clojure
+(br/unmount app)
+```
+
 A Brutha component is a pure function that takes in an immutable data
 structure, and returns a React element. The most straightforward way
 to write a component is to pass a function to `brutha.core/component`:
@@ -106,6 +113,10 @@ DOM. Brutha supports this too. Instead of supplying a function to
      br/IDidUpdate
      (did-update [_ value prev-value dom-node]
        (js/console.log "did-update"))
+
+     br/IWillUnmount
+     (will-unmount [_ value dom-node]
+       (js/console.log "will-unmount"))
 
      br/IRender
      (render [_ value]

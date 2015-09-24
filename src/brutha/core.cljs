@@ -16,6 +16,9 @@
 (defprotocol IDidUpdate
   (did-update [this value prev-value node]))
 
+(defprotocol IWillUnmount
+  (will-unmount [this value node]))
+
 (defprotocol IRender
   (render [this value]))
 
@@ -56,6 +59,12 @@
              (let [value (.. this -props -value)]
                (did-update behavior value (.-value prev-props) (.getDOMNode this)))))
          (fn [_ _]))
+       :componentWillUnmount
+       (if (satisfies? IWillUnmount behavior)
+         (fn []
+           (this-as this
+             (will-unmount behavior (.. this -props -value) (.getDOMNode this))))
+         (fn []))
        :render
        (if (satisfies? IRender behavior)
          (fn [] (this-as this
@@ -95,3 +104,6 @@
     (req-anim-frame (fn []
                       (swap! refresh-queued disj node)
                       (js/React.render element node)))))
+
+(defn unmount [node]
+  (js/React.unmountComponentAtNode node))

@@ -3,10 +3,10 @@
   :url "https://github.com/weavejester/brutha"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0-beta3"]
-                 [org.clojure/clojurescript "0.0-3269" :scope "provided"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojurescript "1.7.122" :scope "provided"]
                  [cljsjs/react "0.13.3-0"]]
-  :plugins [[lein-cljsbuild "1.0.5"]]
+  :plugins [[lein-cljsbuild "1.1.0"]]
   :cljsbuild
   {:test-commands {"unit-tests" ["phantomjs" :runner "target/main.js"]}
    :builds {:main {:source-paths ["src"], :compiler {:output-to "target/main.js"}}}}

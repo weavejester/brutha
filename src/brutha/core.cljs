@@ -1,5 +1,5 @@
 (ns brutha.core
-  (:require cljsjs.react))
+  (:require cljsjs.react.dom))
 
 (defprotocol IShouldUpdate
   (should-update? [this value next-value]))
@@ -43,27 +43,27 @@
        (if (satisfies? IDidMount behavior)
          (fn []
            (this-as this
-             (did-mount behavior (.. this -props -value) (.getDOMNode this))))
+             (did-mount behavior (.. this -props -value) (js/ReactDOM.findDOMNode this))))
          (fn []))
        :componentWillUpdate
        (if (satisfies? IWillUpdate behavior)
          (fn [next-props]
            (this-as this
              (let [value (.. this -props -value)]
-               (will-update behavior value (.-value next-props) (.getDOMNode this)))))
+               (will-update behavior value (.-value next-props) (js/ReactDOM.findDOMNode this)))))
          (fn [_]))
        :componentDidUpdate
        (if (satisfies? IDidUpdate behavior)
          (fn [prev-props _]
            (this-as this
              (let [value (.. this -props -value)]
-               (did-update behavior value (.-value prev-props) (.getDOMNode this)))))
+               (did-update behavior value (.-value prev-props) (js/ReactDOM.findDOMNode this)))))
          (fn [_ _]))
        :componentWillUnmount
        (if (satisfies? IWillUnmount behavior)
          (fn []
            (this-as this
-             (will-unmount behavior (.. this -props -value) (.getDOMNode this))))
+             (will-unmount behavior (.. this -props -value) (js/ReactDOM.findDOMNode this))))
          (fn []))
        :render
        (if (satisfies? IRender behavior)
@@ -103,7 +103,7 @@
     (swap! refresh-queued conj node)
     (req-anim-frame (fn []
                       (swap! refresh-queued disj node)
-                      (js/React.render element node)))))
+                      (js/ReactDOM.render element node)))))
 
 (defn unmount [node]
-  (js/React.unmountComponentAtNode node))
+  (js/ReactDOM.unmountComponentAtNode node))

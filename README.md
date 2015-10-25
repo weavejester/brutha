@@ -77,6 +77,17 @@ to write a component is to pass a function to `brutha.core/component`:
 By wrapping the function in a component, React knows only to update
 the DOM when the value passed to the function changes.
 
+For debugging purposes, particularly when working with
+[React Developer Tools][devtools], it helps to give a component a
+display name by passing an extra argument to `component`:
+
+```clojure
+(def unixtime
+  (br/component 'UnixTime (fn [date] (dom/p (str (.getTime date))))))
+```
+
+[devtools]: https://github.com/facebook/react-devtools
+
 When using the same component multiple times with a collection of
 data, it's important to give React a key to identify the
 component. You can do this by passing a `:key` option to the

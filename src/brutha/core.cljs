@@ -24,8 +24,9 @@
 
 (def ^:dynamic *force-update* false)
 
-(defn- react-methods [behavior]
-  #js {:shouldComponentUpdate
+(defn- react-options [display-name behavior]
+  #js {:displayName display-name
+       :shouldComponentUpdate
        (if (satisfies? IShouldUpdate behavior)
          (fn [next-props _]
            (this-as this
@@ -76,20 +77,22 @@
                    (binding [*force-update* (.-forceUpdate props)]
                      (behavior (.-value props)))))))})
 
-(defn- react-factory [behavior]
-  (js/React.createFactory (js/React.createClass (react-methods behavior))))
+(defn- react-factory [display-name behavior]
+  (js/React.createFactory (js/React.createClass (react-options display-name behavior))))
 
 (defn component
-  [behavior]
-  {:pre [(or (fn? behavior) (satisfies? IRender behavior))]}
-  (let [factory (react-factory behavior)]
-    (fn create-element
-      ([value]
-       (create-element value {}))
-      ([value opts]
-       (factory #js {:key (opts :key js/undefined)
-                     :value value
-                     :forceUpdate *force-update*})))))
+  ([behavior]
+   (component nil behavior))
+  ([display-name behavior]
+   {:pre [(or (fn? behavior) (satisfies? IRender behavior))]}
+   (let [factory (react-factory (str display-name) behavior)]
+     (fn create-element
+       ([value]
+        (create-element value {}))
+       ([value opts]
+        (factory #js {:key (opts :key js/undefined)
+                      :value value
+                      :forceUpdate *force-update*}))))))
 
 (def ^:private refresh-queued (atom #{}))
 

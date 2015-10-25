@@ -11,4 +11,5 @@
   :cljsbuild
   {:builds {:main {:source-paths ["src"]
                    :compiler {:output-to "target/main.js"
+                              :optimizations :whitespace
                               :main example.core}}}})

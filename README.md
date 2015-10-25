@@ -78,8 +78,9 @@ By wrapping the function in a component, React knows only to update
 the DOM when the value passed to the function changes.
 
 For debugging purposes, particularly when working with
-[React Developer Tools][devtools], it helps to give a component a
-display name by passing an extra argument to `component`:
+[React Developer Tools][devtools], it often helps to give a component
+a display name by passing an extra argument when creating the
+component.
 
 ```clojure
 (def unixtime

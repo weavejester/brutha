@@ -4,6 +4,16 @@
             [goog.string :as gstr]
             [goog.string.format]))
 
+(enable-console-print!)
+
+(def unmount-component
+  (br/component
+   (reify
+     br/IRender
+     (render [_ value] (dom/p (:foo value)))
+     br/IWillUnmount
+     (will-unmount [_ value node] (prn [:will-unmount value node])))))
+
 (def time-component
   (br/component
    (fn [dt]
@@ -22,3 +32,7 @@
     (js/setTimeout render-time 16)))
 
 (render-time)
+
+(let [app3 (.getElementById js/document "app3")]
+  (br/mount (unmount-component {:foo "bar"}) app3)
+  (js/setTimeout #(br/unmount app3) 5000))

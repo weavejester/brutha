@@ -19,7 +19,7 @@ application state yourself.
 
 Add the following to your project `:dependencies`:
 
-    [brutha "0.1.5"]
+    [brutha "0.2.0"]
 
 ## Usage
 

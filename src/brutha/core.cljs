@@ -90,9 +90,9 @@
        ([value]
         (create-element value {}))
        ([value opts]
-        (factory #js {:key (opts :key js/undefined)
-                      :value value
-                      :forceUpdate *force-update*}))))))
+        (if-let [key (:key opts)]
+          (factory #js {:value value, :forceUpdate *force-update*, :key key})
+          (factory #js {:value value, :forceUpdate *force-update*})))))))
 
 (def ^:private refresh-queued (atom #{}))
 

@@ -8,8 +8,7 @@
                  [cljsjs/react-dom "15.1.0-0"]]
   :plugins [[lein-cljsbuild "1.1.0"]]
   :cljsbuild
-  {:test-commands {"unit-tests" ["phantomjs" :runner "target/main.js"]}
-   :builds {:main {:source-paths ["src"], :compiler {:output-to "target/main.js"}}}}
-  :profiles
-  {:dev {:plugins [[com.cemerick/clojurescript.test "0.3.3"]]
-         :cljsbuild {:builds {:main {:source-paths ["test"]}}}}})
+  {:builds
+   {:main
+    {:source-paths ["src"]
+     :compiler     {:output-to "target/main.js"}}}})

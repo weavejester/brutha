@@ -152,7 +152,7 @@ after code has been reloaded. This can be done by binding the
 
 ## License
 
-Copyright © 2015 James Reeves
+Copyright © 2016 James Reeves
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

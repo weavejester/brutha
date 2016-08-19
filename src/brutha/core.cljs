@@ -22,20 +22,16 @@
 (defprotocol IRender
   (render [this value]))
 
-(def ^:dynamic *force-update* false)
-
 (defn- react-options [display-name behavior]
   #js {:displayName display-name
        :shouldComponentUpdate
        (if (satisfies? IShouldUpdate behavior)
          (fn [next-props _]
            (this-as this
-             (or (.-forceUpdate next-props)
-                 (should-update? behavior (.. this -props -value) (.-value next-props)))))
+             (should-update? behavior (.. this -props -value) (.-value next-props))))
          (fn [next-props _]
            (this-as this
-             (or (.-forceUpdate next-props)
-                 (not= (.. this -props -value) (.-value next-props))))))
+             (not= (.. this -props -value) (.-value next-props)))))
        :componentWillMount
        (if (satisfies? IWillMount behavior)
          (fn [] (this-as this (will-mount behavior (.. this -props -value))))
@@ -69,13 +65,9 @@
        :render
        (if (satisfies? IRender behavior)
          (fn [] (this-as this
-                 (let [props (.-props this)]
-                   (binding [*force-update* (.-forceUpdate props)]
-                     (render behavior (.-value props))))))
+                 (render behavior (-> this .-props .-value))))
          (fn [] (this-as this
-                 (let [props (.-props this)]
-                   (binding [*force-update* (.-forceUpdate props)]
-                     (behavior (.-value props)))))))})
+                 (behavior (-> this .-props .-value)))))})
 
 (defn- react-factory [display-name behavior]
   (js/React.createFactory (js/React.createClass (react-options display-name behavior))))
@@ -91,8 +83,8 @@
         (create-element value {}))
        ([value opts]
         (if-let [key (:key opts)]
-          (factory #js {:value value, :forceUpdate *force-update*, :key key})
-          (factory #js {:value value, :forceUpdate *force-update*})))))))
+          (factory #js {:value value, :key key})
+          (factory #js {:value value})))))))
 
 (def ^:private refresh-queued (atom #{}))
 
